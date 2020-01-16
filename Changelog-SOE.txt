@@ -1,0 +1,19 @@
+Versioning:
+     Major.Minor.Fix-Build
+
+ Legend:
+==================
+    + Add
+    - Remove
+    ! Fix
+    * Change
+    ^ Update
+==================
+
+AHKSOE V1
+Date: 20200130 18:30
+    Changes:
+    ^ Ini write and read optimized
+    + tstrunk - searches trunk with user provided trash items
+    + tglovebox - searches the glovebox/interior of a vehicle with user provide trash items
+    * Improved Medbag from trunk handling.
