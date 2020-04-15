@@ -24,17 +24,17 @@ global script := {  based               : scriptobj
                     ,name               : "AHKSOE"
                     ,version            : "1"
                     ,author             : "DreadfullyDespized"
-                    ,Homepage           : "https://forum.newdawn.fun/t/a-little-something-that-i-use-and-work-on/1218"
-                    ,crtdate            : "20190707"
-                    ,moddate            : "20191104"
+                    ,Homepage           : "https://github.com/DreadfullyDespized/ahksoe"
+                    ,crtdate            : "20200118"
+                    ,moddate            : "20200204"
                     ,conf               : "SOE-Config.ini"
                     ,logurl             : "https://raw.githubusercontent.com/DreadfullyDespized/ahksoe/master/"
                     ,change             : "Changelog-SOE.txt"
-                    ,bug                : "https://github.com/DreadfullyDespized/ahkgtav/issues/new?assignees=DreadfullyDespized&labels=bug&template=bug_report.md&title="
-                    ,feedback           : "https://github.com/DreadfullyDespized/ahkgtav/issues/new?assignees=DreadfullyDespized&labels=enhancement&template=feature_request.md&title="
-                    ,citlaw             : "https://forum.newdawn.fun/t/ndg-traffic-laws/555"
-                    ,mislaw             : "https://forum.newdawn.fun/t/ndg-misdemeanor-laws/558"
-                    ,fellaw             : "https://forum.newdawn.fun/t/ndg-felony-laws/559"}
+                    ,bug                : "https://github.com/DreadfullyDespized/ahksoe/issues/new?assignees=DreadfullyDespized&labels=bug&template=bug_report.md&title="
+                    ,feedback           : "https://github.com/DreadfullyDespized/ahksoe/issues/new?assignees=DreadfullyDespized&labels=enhancement&template=feature_request.md&title="
+                    ,citlaw             : "https://evolpcgaming.com/forums/topic/4-vehicle-laws-fines/"
+                    ,mislaw             : "https://evolpcgaming.com/forums/topic/5-misdemeanor-felony-laws-fines/"
+                    ,fellaw             : "https://evolpcgaming.com/forums/topic/5-misdemeanor-felony-laws-fines/"}
 
 global updatefile = % A_Temp "\" script.change
 global logurl = % script.logurl script.change
@@ -159,7 +159,7 @@ update(lversion) {
 ; Configure these variables as you wish to be presented
 textspace = y+3
 towtype = f
-config = NDG-Config.ini
+config = SOE-Config.ini
 ; ============================================ INI READING ============================================
 ; Section to read in the configuration file if it exists
 IfExist, %config%
@@ -176,118 +176,6 @@ IfExist, %config%
 }
 
 GoSub, ReadConfig
-
-IfNotExist, NDG-Citation.csv
-FileAppend,
-(
-10-19 MPH Over,200,
-20-29 MPH Over,400,
-30+ MPH Over,600,
-Broken Windshield,250,
-Careless Driving,1000,
-Commercial Vehicle Fine,1000,
-Driving under the Influence,2500,30
-Excessive vehicle noise,400,
-Failure to have correct registration on vehicle,600,
-Failure to have registration displayed on vehicle,350,
-Failure to use Headlights at night,250,
-Failure to use signal when turning/changing lanes,150,
-Failure to yield right of way to traffic,400,
-Failure to yield to emergency vehicle,600,
-Hit and Run,5000,20
-Illegal passing,200,
-Illegal turn,400,
-Illegal U-Turn,400,
-Illegally parked vehicle,400,
-Impeding flow of traffic,500,
-Running a red light,400,
-Running a stop sign,300,
-Tailight or headlight out,250,
-Traveling wrong way,300,
-Unroadworthy vehicle,300,
-)
-,NDG-Citation.csv
-
-IfNotExist, NDG-Misdemeanor.csv
-FileAppend,
-(
-Arson 2nd Degree,1500,20
-Assault 2nd Degree,2500,15
-Attempted Grand Theft Auto,1000,10
-Brandishing of a Firearm,1000,10
-Destruction of Government Property,1500,15
-Destruction of Property,1000,10
-Disorderly Conduct,500,10
-Domestic Violence,1000,20
-Driving on suspended license,1000,10
-Driving without a license,1500,15
-Failure to comply with lawful order,700,15
-Failure to identify to LEO,,99999
-Failure to pay fines,1000,15
-Failure to supply documentation to LEO,700,15
-False 911 calls,1500,20
-False Report,1500,20
-Harassment,1000,10
-JayWalking,200,
-Joyriding,600,15
-Loitering,500,
-Petty Theft,1500,15
-Poaching,500,20
-Possession of a stolen identification,1500,10
-Posession of burglary tools,1000,20
-Possession of illegal substance (General),1500,20
-Possession of Marijuana,1000,
-Prostitution,800,10
-Public Indecency,500,10
-Public Intoxication,800,10
-Reckless Driving,2500,15
-Reckless Endangerment,2000,20
-Stalking,1500,15
-Street Racing,1500,20
-Trespassing,1000,10
-Trespassing on Government Property,2500,15
-Unlawful Imprisonment,1500,10
-Unlawful use of a weapon,3000,20
-)
-,NDG-Misdemeanor.csv
-
-IfNotExist, NDG-Felony.csv
-FileAppend,
-(
-Aiding and Abetting/Accessory,,
-Arson 1st Degree,3000,35
-Assault 1st Degree,4000,30
-Assault on Emergency Services,6000,40
-Assault with a deadly weapon,5500,35
-Attempted murder,5000,40
-Attempted murder of Emergency Services,7000,50
-Bribery of a Public Servant,3000,10
-Burglary,3500,30
-Conspiracy to Commit a Criminal Act,1500,15
-Criminal Possession of Government Issued Equipment,5000,25
-Criminal threat,4000,20
-Destruction of physical evidence,1000,30
-Escaping Custody,3000,20
-Falsifying Government Document,3000,20
-Fleeing and Eluding,1500,15
-Fraud,1500,10
-Grand Theft,3500,30
-Grand Theft Auto,1500,20
-Illegal possession of a Weapon/Firearm,2500,20
-Impersonation,1000,10
-Impersonation of an Emergency Services,2500,20
-Kidnapping,3000,25
-Manslaughter,5500,30
-Murder,7000,50
-Murder of a Emergency Services,12000,60
-Obstruction of Justice,2000,10
-Possession of a outlawed Weapon,3000,30
-Possession of Marijuana with intent to sell,2500,15
-Robbery/Armed Robbery,6000,30
-Terroristic Acts,30000,999
-Vehiclular Manslaughter,5500,30
-)
-,NDG-Felony.csv
 
 ; ============================================ HELP TEXT FORMAT ============================================
 ; Main portion of the help text that is displayed
@@ -335,7 +223,6 @@ tglovebox - searches through the interior of a vehicle
 tstrunk - searches through the trunk of the vehicle - Face the trunk
 
 Control+1 - Configuration screen
-Control+2 - NDG Ticket|Misdemeanor|Felony Calculator
 Control+3 - Reload Script
 Control+4 - Update Checker
 Control+5 - Police Overlay
@@ -365,6 +252,7 @@ tndghelp = display ndg help information in local ooc
 
 General Commands:
 ---------------------------
+F1 - enables/disables seatbelt
 tgun - use firearm
 tscrap - rp the scrap to truck
 F9 - enables/disables engine
@@ -406,7 +294,6 @@ All indicated arrest/bill amounts are the MAX not the suggested.
 ; Removes all of the standard options from the system tray
 Menu, Tray, NoStandard
 Menu, Tray, Add, &Update Checker, ^4
-Menu, Tray, Add, &Ticket Calc, ^2
 Menu, Tray, Add, GTAV &Car Search, vehimghk
 Menu, Tray, Add, &Reconfigure/Help, ^1
 Menu, Tray, Add, &Police Overlay, ^5
@@ -545,6 +432,10 @@ Return
 ; Both numbers should match to work with your ping to the server.
 ; Take your ping to the server and then times it by two to equal the delay numbers
 SetKeyDelay, 0, 100
+
+; Configure Variables to be used
+; Do not touch or change this section
+spikes = 0
 
 ; Default state of lock keys
 SetNumLockState, AlwaysOn
@@ -763,6 +654,7 @@ SetScrollLockState, AlwaysOff
     Gui, 2:Add, Text, r2, valet2hkmsg:
     Gui, 2:Add, Text, , phrechkmsg:
     Gui, 2:Add, Text, y200 x20, Engine Hotkey:
+    Gui, 2:Add, Text,, Seatbelt Hotkey:
     Gui, 2:Add, Text,, Valet App Hotkey:
     Gui, 2:Add, Text,, Valet Call Hotkey:
     Gui, 2:Add, Text,, Phone Record Hotkey:
@@ -774,6 +666,8 @@ SetScrollLockState, AlwaysOff
     phrechkmsg_TT := "Action message to be used when pulling out phone to record"
     Gui, 2:Add, Hotkey, w150 x140 y195 venginehk, %enginehk%
     enginehk_TT := "Hotkey to be used to force the /engine on when cruise doesn't work"
+    Gui, 2:Add, Hotkey, w150 vseatbelthk, %seatbelthk%
+    seatbelthk_TT := "Hotkey to be used to put the seatbelt in a vehicle on or off"
     Gui, 2:Add, Hotkey, w150 vvalet1hk, %valet1hk%
     valet1hk_TT := "Hotkey to use your phone valet app"
     Gui, 2:Add, Hotkey, w150 vvalet2hk, %valet2hk%
@@ -800,488 +694,6 @@ SetScrollLockState, AlwaysOff
     Gosub, hotkeys
 Return
 
-^2::
-    Gui, 5:Destroy
-    Gui, 5:Font,, Consolas
-    Gui, 5:Color, Silver
-    Gui, 5:Add, Text, y10, Offender ID:
-    Gui, 5:Add, Text, x140 y10, CautionCode:
-    Gui, 5:Add, Text, x300 y10, ArrestMod:
-    Gui, 5:Add, Text, x413 y10, FineMod:
-    Gui, 5:Add, Text, x583 y10, Plate:
-    Gui, 5:Add, Edit, x85 y6 w50 voffenderid Limit6, 0
-    offenderid_TT := "This would be the citizen id that is on their ID - DOUBLE CHECK IT!"
-    Gui, 5:Add, DropDownList, x215 y6 w40 vcautioncode, |G|PH|V|ST|E|M
-    cautioncode_TT :=
-    (
-"G = Gang Affiliated
-PH = Police Hater
-V = Violent
-ST = Suicidal Tendancies - Approved by SAFR Only
-E = Escape Risk
-M = Mental Instability - Approved by SAFR Only"
-    )
-    Gui, 5:Add, Button, x255 y5 gcautioncode vcaucode, Set
-    caucode_TT := "Setting {CautionCode} once will add it, setting the same caution code will removeit, they are toggled"
-    Gui, 5:Add, Edit, x360 y6 w45 varrestmod Limit5, 0
-    arrestmod_TT := "This would modify the original max time to what you specify"
-    Gui, 5:Add, Edit, x464 y6 w50 vfinemod Limit6, 0
-    billmod_TT := "This would modify the original max fine/ticket to what you specify"
-    Gui, 5:Add, Edit, x623 y6 w70 vplate Limit8, 0
-    plate_TT := "License plate of the vehicle in question"
-    Gui, 5:Add, Button, x515 y5 gchargemod vchgmod, Set Mods
-    chgmod_TT := "This should configure both the arrestmod and the bill/ticket mod"
-    Gui, 5:Add, Tab3, x10, Citation|Misdemeanor|Felony|PrettyFaces
-    Gui, 5:Add, Edit, Readonly r4 w680 vcitationtext, %citationtext%
-    Loop, read, %A_ScriptDir%\NDG-Citation.csv
-	{
-	    StringSplit, val, A_LoopReadLine,`,
-        c_LineNumber = %A_Index%
-	    Loop,%Val0%
-            c_offense_%c_LineNumber% := val1
-            c_fine_%c_LineNumber% := val2
-            c_arrest_%c_LineNumber% := val3
-            if (c_LineNumber == 20) {
-                Gui, 5:Add, Button, x353 y124 gcitsub vcBtn%c_LineNumber%, %val1%-%c_LineNumber%
-            } else {
-                Gui, 5:Add, Button, gcitsub vcBtn%c_LineNumber%, %val1%-%c_LineNumber%
-            }
-	}
-    Gui, 5:Font, s12 Underline cBlue, Consolas
-    Gui, 5:Add, Text, x590 y650 gcitationlaw vcitationlaw, Citation-Law
-    citationlaw_TT := "Government website with all of the Traffic related laws.  Use for reference."
-    Gui, 5:Font
-    Gui, 5:Tab, 2
-    Gui, 5:Add, Edit, Readonly r3 w680 vmisdemeanortext, %misdemeanortext%
-        Loop, read, %A_ScriptDir%\NDG-Misdemeanor.csv
-	{
-	    StringSplit, val, A_LoopReadLine,`,
-        c_LineNumber = %A_Index%
-	    Loop,%Val0%
-            m_offense_%c_LineNumber% := val1
-            m_fine_%c_LineNumber% := val2
-            m_arrest_%c_LineNumber% := val3
-            if (c_LineNumber == 20) {
-                Gui, 5:Add, Button, x353 y112 gmisdsub vmBtn%c_LineNumber%, %val1%-%c_LineNumber%
-            } else {
-                Gui, 5:Add, Button, gmisdsub vmBtn%c_LineNumber%, %val1%-%c_LineNumber%
-            }
-	}
-    Gui, 5:Font, s12 Underline cBlue, Consolas
-    Gui, 5:Add, Text, x565 y650 gmisdemeanorlaw vmisdemeanorlaw, Misdemeanor-Law
-    misdemeanorlaw_TT := "Government website with all of the Misdemeanor related laws.  Use for reference."
-    Gui, 5:Font
-    Gui, 5:Tab, 3
-    Gui, 5:Add, Edit, Readonly r3 w680 vfelonytext, %felonytext%
-            Loop, read, %A_ScriptDir%\NDG-Felony.csv
-	{
-	    StringSplit, val, A_LoopReadLine,`,
-        c_LineNumber = %A_Index%
-	    Loop,%Val0%
-            f_offense_%c_LineNumber% := val1
-            f_fine_%c_LineNumber% := val2
-            f_arrest_%c_LineNumber% := val3
-            if (c_LineNumber == 20) {
-                Gui, 5:Add, Button, x365 y112 gfelosub vfBtn%c_LineNumber%, %val1%-%c_LineNumber%
-            } else {
-                Gui, 5:Add, Button, gfelosub vfBtn%c_LineNumber%, %val1%-%c_LineNumber%
-            }
-	}
-    Gui, 5:Font, s12 Underline cBlue, Consolas
-    Gui, 5:Add, Text, x610 y650 gfelonylaw vfelonylaw, Felony-Law
-    felonylaw_TT := "Government website with all of the Felony related laws.  Use for reference."
-    Gui, 5:Font
-    Gui, 5:Tab, 4
-    Gui, 5:Add, Text, x15 y65, Vehicle Report:
-    Gui, 5:Add, Text, x15 y95, License Status:
-    Gui, 5:Add, DropDownList, x105 y60 w90 vvehreport, |recovered|stolen
-    vehreport_TT :=
-    (
-"Recovered = Reports the plate entered recovered
-Stolen = Reports the plate entered stolen"
-    )
-    Gui, 5:Add, DropDownList, x105 y90 w90 vlrevoke, |revoke|reinstate
-    lrevoke_TT :=
-    (
-"revoke = revokes the selected license
-reinstate = reinstates the select license"
-    )
-    Gui, 5:Add, DropDownList, x195 y90 w90 vltype, |drivers|gun|hunting
-    ltype_TT :=
-    (
-"drivers = revokes or reinstates drivers license
-gun = revokes or reinstates gun license
-hunting = revokes or reinstates hunting license"
-    )
-    Gui, 5:Add, Button, x195 y60 gvcheck vvset, Set Vehicle
-    Gui, 5:Add, Button, x285 y90 glcheck vlset, Set License
-    Gui, 5:Tab
-    Gui, 5:Add, Edit, Readonly r5 w706 vpText
-    pText_TT := "Use this section to copy the arrest/bill/ticket from, to enter into the game."
-    Gui, 5:Add, Button, gcheck2 vsubmit, Submit
-    Submit_TT := "Cleans out the record and updates the Charge Log file."
-    Gui, 5:Add, Button, x60 y768 gwarrant vwarrant, ToWarrant
-    warrant_TT := "Converts the charges to a Warrant format."
-    Gui, 5:Add, Button, x125 y768 gcwarrant vcwarrant, ClearWarrant
-    cwarrant_TT := "Provides command to wipe all warrants on a offender id."
-    Gui, 5:Add, Button, x250 y768 gclear vclear, Clear
-    Clear_TT := "Clears out all entries without saving them."
-    Gui, 5:add, Button, x292 y768 gclearall vclearall, ClearAll
-    clearall_TT := "Clears all possible fields other then the Offender ID"
-    Gui, 5:Add, Button, x610 y768 h25 w40 gbug, BUG
-    Gui, 5:Add, Button, x650 y768 h25 w65 gfeedback, Feedback
-    Gui, 5:Show,, Citation | Misdemeanor | Felony | CautionCode - LEO Calculator
-    OnMessage(0x200, "WM_MOUSEMOVE")
-    lastEdit := ""
-    Return
-
-    5GuiEscape:
-    5GuiClose:
-    Gui, 5:Cancel
-    Return
-Return
-
-citationlaw:
-Run, % script.citlaw
-Return
-
-misdemeanorlaw:
-Run, % script.mislaw
-Return
-
-felonylaw:
-Run, % script.fellaw
-Return
-
-cautioncode:
-gui,submit,nohide
-PEdit = 
-(
-/cautioncode %offenderid% %cautioncode%
-)
-if (lastEdit == ""){
-    guicontrol,,pText,% PEdit
-    LastEdit := PEdit
-} else {
-    guicontrol,,pText,% PEdit
-    lastEdit :=
-}
-Return
-
-cwarrant:
-gui,submit,nohide
-PEdit = 
-(
-/warrant %offenderid% clear
-)
-if (lastEdit == ""){
-    guicontrol,,pText,% PEdit
-    LastEdit := PEdit
-} else {
-    guicontrol,,pText,% PEdit
-    lastEdit :=
-}
-Return
-
-warrant:
-gui,submit,nohide
-FormatTime, TimeString,, MM.dd.yy
-PEdit = 
-(
-/warrant %offenderid% %offense% | (%name% - %department% - %TimeString%)
-)
-if (lastEdit == ""){
-    guicontrol,,pText,% PEdit
-    LastEdit := PEdit
-} else {
-    guicontrol,,pText,% PEdit
-    lastEdit :=
-}
-Return
-
-chargemod:
-gui,submit,nohide
-if (!arrestmod) {
-    arrestmod := arrest
-}
-if (!finemod) {
-    finemod := fine
-}
-Taste := StrSplit(PEdit, A_Space, "/")
-if (InStr(PEdit,"/arrest")) {
-    Grab1 := arrest
-}
-if (Instr(PEdit,"/ticket") or Instr(PEdit,"/bill")) {
-    Grab2 := fine
-}
-if (arrestmod > arrest) {
-    msgbox,64, Danger %name% of the %department%, You can not go beyond the maximum arrest time of [%arrest%] minutes based on the charges provided.  Please clear and try again.
-    Return
-}
-if (finemod > fine) {
-    msgbox,64, Danger %name% of the %department%, You can not go beyond the maximum fine/bill of [$%fine%] based on the charges provided.  Please clear and try again.
-    Return
-}
-PEdit := StrReplace(PEdit,Grab1,arrestmod,,Limit := 1)
-arrest := arrestmod
-PEdit := StrReplace(PEdit,Grab2,finemod,,Limit := 1)
-fine := finemod
-if (lastEdit == ""){
-    guicontrol,,pText,% PEdit
-    LastEdit := PEdit
-} else {
-    guicontrol,,pText,% PEdit
-    lastEdit :=
-}
-Return
-
-citsub:
-gui,submit,nohide
-RegExMatch(A_GuiControl, "\d+$", n)
-if (n == 6 and InStr(PEdit,"Commercial Vehicle Fine")) {
-    msgbox, Commercial Vehicle fine can not be by itself.
-} else if (InStr(PEdit,"/bill")) {
-    msgbox, Please Clean out the Misedeamnor or Felony before issuing a ticket.
-} else if (n == 6 and InStr(PEdit,"/arrest")) {
-    offensea = %offense%
-    offenseadd = % c_offense_%n%
-    offense =  %offense% | %offenseadd%
-    fine += % c_fine_%n%
-    if (arrest) {
-        PEdit = 
-        (
-/arrest %offenderid% %arrest% | %offensea% | (%name% - %department%)
-/ticket %offenderid% %fine% | %offense% | (%name% - %department%)
-        )
-    } else {
-        PEdit = 
-        (
-/ticket %offenderid% %fine% | %offense% | (%name% - %department%)
-        )
-    }
-} else if (n == 6 and InStr(PEdit,"/ticket")) {
-    offenseadd = % c_offense_%n%
-    offense =  %offense% | %offenseadd%
-    fine += % c_fine_%n%
-    if (arrest) {
-        PEdit = 
-        (
-/arrest %offenderid% %arrest% | %offensea% | (%name% - %department%)
-/ticket %offenderid% %fine% | %offense% | (%name% - %department%)
-        )
-    } else {
-        PEdit = 
-        (
-/ticket %offenderid% %fine% | %offense% | (%name% - %department%)
-        )
-    }
-} else if (n == 6) {
-    PEdit = 
-(
-You can not issue a Commercial Vehicle fine only by itself.  This must be an additional charge.
-)
-} else {
-    offense = % c_offense_%n%
-    fine = % c_fine_%n%
-    arrest = % c_arrest_%n%
-    if (arrest) {
-        PEdit = 
-        (
-/arrest %offenderid% %arrest% | %offense% | (%name% - %department%)
-/ticket %offenderid% %fine% | %offense% | (%name% - %department%)
-        )
-    } else {
-        PEdit = 
-        (
-/ticket %offenderid% %fine% | %offense% | (%name% - %department%)
-        )
-    }
-}
-if (lastEdit == ""){
-    guicontrol,,pText,% PEdit
-    LastEdit := PEdit
-} else {
-    guicontrol,,pText,% PEdit
-    lastEdit :=
-}
-Return
-
-misdsub:
-gui,submit,nohide
-RegExMatch(A_GuiControl, "\d+$", n)
-if (InStr(PEdit,"/ticket")) {
-msgbox, You must Clear the Ticket before issuing Misdemanor chargers.
-} else if (offense) {
-    offenseadd = % m_offense_%n%
-    offense = %offense% | %offenseadd%
-    fine += % m_fine_%n%
-    arrest += % m_arrest_%n%
-    PEdit = 
-    (
-/arrest %offenderid% %arrest% | %offense% | (%name% - %department%)
-/bill %offenderid% %fine% | %offense% | (%name% - %department%)
-    )
-} else {
-    offense = % m_offense_%n%
-    fine = % m_fine_%n%
-    arrest = % m_arrest_%n%
-    PEdit = 
-    (
-/arrest %offenderid% %arrest% | %offense% | (%name% - %department%)
-/bill %offenderid% %fine% | %offense% | (%name% - %department%)
-    )
-}
-if (lastEdit == ""){
-    guicontrol,,pText,% PEdit
-    LastEdit := PEdit
-} else {
-    guicontrol,,pText,% PEdit
-    lastEdit :=
-}
-return
-
-felosub:
-gui,submit,nohide
-RegExMatch(A_GuiControl, "\d+$", n)
-if (InStr(PEdit,"/ticket")) {
-    msgbox, You must Clear the Ticket before issuing Felony chargers.
-} else if (n == 1 and InStr(PEdit, "Aiding and Abetting")) {
-    msgbox, Aiding and Abetting cannot be on itself.
-} else if (n == 1 and offense) {
-    offenseadd = % f_offense_%n%
-    offense = %offense% | %offenseadd%
-    fine += % f_fine_%n%
-    arrest += % f_arrest_%n%
-    PEdit = 
-    (
-/arrest %offenderid% %arrest% | %offense% | (%name% - %department%)
-/bill %offenderid% %fine% | %offense% | (%name% - %department%)
-    )
-} else if (offense) {
-    offenseadd = % f_offense_%n%
-    offense = %offense% | %offenseadd%
-    fine += % f_fine_%n%
-    arrest += % f_arrest_%n%
-    PEdit = 
-    (
-/arrest %offenderid% %arrest% | %offense% | (%name% - %department%)
-/bill %offenderid% %fine% | %offense% | (%name% - %department%)
-    )
-} else if (n == 1) {
-    PEdit = 
-    (
-You can not issue a Aiding and Abetting charge by itself.  This must be an additional charge.        
-    )
-} else {
-    offense = % f_offense_%n%
-    fine = % f_fine_%n%
-    arrest = % f_arrest_%n%
-    PEdit = 
-    (
-/arrest %offenderid% %arrest% | %offense% | (%name% - %department%)
-/bill %offenderid% %fine% | %offense% | (%name% - %department%)
-    )
-}
-if (lastEdit == ""){
-    guicontrol,,pText,% PEdit
-    LastEdit := PEdit
-} else {
-    guicontrol,,pText,% PEdit
-    lastEdit :=
-}
-return
-
-check2:
-gui,submit,nohide ;updates gui variable
-FormatTime, TimeString,, yyyyMMdd HH:mm:ss
-FileAppend,
-(
-%TimeString%
-%PEdit%
-`n
-), %chrglog%
-lastEdit := chrglog " Updated"
-offense :=
-fine :=
-arrest :=
-PEdit :=
-guicontrol,,pText,% lastEdit
-; Run %chrglog%
-Return
-
-lcheck:
-gui,submit,nohide
-if (!offenderid) {
-    msgbox You are required to enter an offenderid
-    Return
-} else if (!lrevoke) {
-    msgbox Please select to revoke or reinstate
-    Return
-} else if (!ltype) {
-    msgbox Please select license type
-    Return
-} else {
-    PEdit = 
-(
-/license %lrevoke% %ltype% %offenderid%
-)
-}
-if (lastEdit == ""){
-    guicontrol,,pText,% PEdit
-    LastEdit := PEdit
-} else {
-    guicontrol,,pText,% PEdit
-    lastEdit :=
-}
-Return
-
-vcheck:
-gui,submit,nohide
-if (!plate) {
-    msgbox Please enter in a license plate first
-    Return 
-} else if (!vehreport) {
-    msgbox Please select recovered or stolen
-    return
-} else {
-    PEdit = 
-(
-/reportveh %vehreport% %plate%
-)
-}
-if (lastEdit == ""){
-    guicontrol,,pText,% PEdit
-    LastEdit := PEdit
-} else {
-    guicontrol,,pText,% PEdit
-    lastEdit :=
-}
-Return
-
-clear:
-gui,submit,nohide ;updates gui variable
-lastEdit := "Cleared Records"
-offense :=
-fine :=
-arrest :=
-PEdit :=
-guicontrol,,pText,% lastEdit
-Return
-
-clearall:
-gui,submit,nohide
-lastEdit := "Full Clear Completed"
-offense :=
-fine :=
-finemod :=
-arrest := 
-arrestmod :=
-PEdit :=
-guicontrol,,pText,% lastEdit
-guicontrol,,arrestmod,0
-guicontrol,,finemod,0
-Return
-
 ; Empty Recycle Bin
 #Del::FileRecycleEmpty ; Windows + Del
 Return
@@ -1299,7 +711,7 @@ Return
 
 ; ====================== GTAV Stuff =========================
 
-; not used on NDG - F4 F9 F10 F11
+; not used on SOE - F4 F7 F10 F11
 ; Pressing T to open chat and then typing unrack/rack
 
 ; ============================================ LEO Stuff ============================================
@@ -1311,13 +723,25 @@ Return
     if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitled - Notepad") || (testmode = 1)) {
         clipaboard = %clipboard%
         Sleep, %delay%
-        Send, {t down}
-        Sleep, %delay%
-        Send, {t up}
-        Sleep, %delay%
-        Clipboard = /spikes
-        ClipWait
-        Send, {RCtrl down}v{RCtrl up}{enter}
+        if (spikes = 0) {
+            Send, {t down}
+            Sleep, %delay%
+            Send, {t up}
+            Sleep, %delay%
+            Clipboard = /spikes
+            ClipWait
+            Send, {RCtrl down}v{RCtrl up}{enter}
+            spikes = 1
+        } else {
+            Send, {t down}
+            Sleep, %delay%
+            Send, {t up}
+            Sleep, %delay%
+            Clipboard = /rspikes
+            ClipWait
+            Send, {Rctrl down}v{Rctrl up}{enter}
+            spikes = 0
+        }
         Sleep, %delay%
         clipboard = %clipaboard%
     }
@@ -1348,20 +772,6 @@ Return
         }
         clipaboard = %clipboard%
         Sleep, %delay%
-        Clipboard = /fuelhud
-        ClipWait
-        Send, {Rctrl down}v{Rctrl up}{enter}
-        Sleep, %delay%
-        Sleep, %delay%
-        Send, {t down}
-        Sleep, %delay%
-        Send, {t up}
-        Sleep, %delay%
-        Clipboard = /gps
-        ClipWait
-        Send, {Rctrl down}v{Rctrl up}{enter}
-        Sleep, %delay%
-        Sleep, %delay%
         Send, {t down}
         Sleep, %delay%
         Send, {t up}
@@ -1386,9 +796,9 @@ Return
         ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
-        Send, {F9 down}
+        Send, {F7 down}
         Sleep, %delay%
-        Send, {F9 up}
+        Send, {F7 up}
         Sleep, %delay%
         clipboard = %clipaboard%
     }
@@ -1496,6 +906,7 @@ Return
     Return
 
     ; Touches the vehicle on approach
+    ; cmd is /touchveh
     :*:ttv:: ; Type ttv in-game
     if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitled - Notepad") || (testmode = 1)) {
         clipaboard = %clipboard%
@@ -2019,12 +1430,30 @@ if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitle
 }
 Return
 
-; This provides the help text for newdawngaming inforamtion in local ooc chat
-:*:tndghelp:: ; Type tndg in-game
+; This is a quick way of buckling or unbuckling your seatbelt
+; F1:: ; Press F1 in-game
+sbhk:
 if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitled - Notepad") || (testmode = 1)) {
     clipaboard = %clipboard%
     Sleep, %delay%
-    Clipboard := "New Dawn Gaming information at ^1 https://forum.newdawn.fun/ ^0 for the forums and for the player list ^2 https://newdawn.fun/ ^0 for guides ^8 https://forum.newdawn.fun/c/for-new-members/guides"
+    Send, {t down}
+    Sleep, %delay%
+    Send, {t up}
+    Sleep, %delay%
+    clipboard = /seatbelt
+    ClipWait
+    Send, {Rctrl down}v{Rctrl up}{enter}
+    Sleep, %delay%
+    clipboard = %clipaboard%
+}
+Return
+
+; This provides the help text for State of Emergency inforamtion in local ooc chat
+:*:tsoehelp:: ; Type tsoehelp in-game
+if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitled - Notepad") || (testmode = 1)) {
+    clipaboard = %clipboard%
+    Sleep, %delay%
+    Clipboard := "New Dawn Gaming information at ^1 https://evolpcgaming.com/ ^0 for the forums and for the player list ^2 https://soe.gg/ ^0 for guides ^8 https://evolpcgaming.com/guidelines/"
     ClipWait
     Send, {Rctrl down}v{Rctrl up}{enter}
     Sleep, %delay%
@@ -2033,7 +1462,7 @@ if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitle
 Return
 
 ; This will run the /engine command to toggle engine state
-; F9:: ; Press F9 in-game
+; F7:: ; Press F7 in-game
 enhk:
 if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitled - Notepad") || (testmode = 1)) {
     clipaboard = %clipboard%
@@ -2178,6 +1607,7 @@ hotkeys:
     hotkey, %runplatehk%, rphk, On
     hotkey, %towcallhk%, tchk, On
     hotkey, %towrespondhk%, trhk, On
+    hotkey, %seatbelthk%, sbhk, On
     hotkey, %enginehk%, enhk, On
     hotkey, %valet1hk%, val1hk, On
     hotkey, %valet2hk%, val2hk, On
@@ -2190,6 +1620,7 @@ fuckakey:
     hotkey, %runplatehk%, rphk, Off
     hotkey, %towcallhk%, tchk, Off
     hotkey, %towrespondhk%, trhk, Off
+    hotkey, %seatbelthk%, sbhk, Off
     hotkey, %enginehk%, enhk, Off
     hotkey, %valet1hk%, val1hk, Off
     hotkey, %valet2hk%, val2hk, Off
@@ -2199,12 +1630,12 @@ Return
 ReadConfig:
     ; Back to the reading of the configuration
     IniRead, rolepick, %config%, Yourself, role, LEO
-    IniRead, callsign, %config%, Yourself, callsign, D6
+    IniRead, callsign, %config%, Yourself, callsign, A13
     IniRead, myid, %config%, Yourself, myid, 30
-    IniRead, towcompany, %config%, Yourself, towcompany, DonkeyDick
+    IniRead, towcompany, %config%, Yourself, towcompany, SkinnyDick
     IniRead, name, %config%, Yourself, name, Dread
-    IniRead, title, %config%, Yourself, title, Deputy
-    IniRead, department, %config%, Yourself, department, LSSD
+    IniRead, title, %config%, Yourself, title, Officer
+    IniRead, department, %config%, Yourself, department, LSPD
     IniRead, phone, %config%, Yourself, phone, 00030
     ; Client communication and test mode
     IniRead, delay, %config%, Yourself, delay, 80
@@ -2220,7 +1651,8 @@ ReadConfig:
     IniRead, runplatehk, %config%, Keys, runplatehk, ^-
     IniRead, towcallhk, %config%, Keys, towcallhk, ^k
     IniRead, towrespondhk, %config%, Keys, towrespondhk, ^j
-    IniRead, enginehk, %config%, Keys, enginehk, F9
+    IniRead, seatbelthk, %config%, Keys, seatbelthk, F1
+    IniRead, enginehk, %config%, Keys, enginehk, F7
     IniRead, valet1hk, %config%, Keys, valet1hk, +F11
     IniRead, valet2hk, %config%, Keys, valet2hk, F11
     IniRead, phrechk, %config%, Keys, phrechk, F10
@@ -2276,6 +1708,7 @@ UpdateConfig:
     IniWrite, %runplatehk%, %config%, Keys, runplatehk
     IniWrite, %towcallhk%, %config%, Keys, towcallhk
     IniWrite, %towrespondhk%, %config%, Keys, towrespondhk
+    IniWrite, F1, %config%, Keys, seatbelthk
     IniWrite, %enginehk%, %config%, Keys, enginehk
     IniWrite, %valet1hk%, %config%, Keys, valet1hk
     IniWrite, %valet2hk%, %config%, Keys, valet2hk
