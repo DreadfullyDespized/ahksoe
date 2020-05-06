@@ -22,11 +22,11 @@ Menu, Tray, Icon, shell32.dll, 194
 
 global script := {  based               : scriptobj
                     ,name               : "AHKSOE"
-                    ,version            : "1"
+                    ,version            : "2"
                     ,author             : "DreadfullyDespized"
                     ,Homepage           : "https://github.com/DreadfullyDespized/ahksoe"
                     ,crtdate            : "20200118"
-                    ,moddate            : "20200204"
+                    ,moddate            : "20200506"
                     ,conf               : "SOE-Config.ini"
                     ,logurl             : "https://raw.githubusercontent.com/DreadfullyDespized/ahksoe/master/"
                     ,change             : "Changelog-SOE.txt"
@@ -68,16 +68,17 @@ ochecky := script.version "." script.moddate
 ; }
 
 ; ============================================ SCRIPT AUTO UPDATER ============================================
-update(lversion) {
+update(ochecky) {
     RunWait %ComSpec% /c "Ping -n 1 -w 3000 google.com",, Hide  ; Check if we are connected to the internet
     if connected := !ErrorLevel {
         FileReadLine, line, %updatefile%, 13
-        RegexMatch(line, "\d", Version)
+        RegexMatch(line, "\d.\d{8}", Version)
         rfile := script.logurl script.name ".ahk"
-        if (Version > lversion) {
+        if (Version > ochecky) {
             Msgbox, 68, % "New Update Available"
                       , % "There is a new update available for this application.`n"
-                        . "Do you wish to upgrade to V" Version "?"
+                        . "Do you wish to upgrade to V" Version "?`n"
+                        . "Local Version: " ochecky
                       , 10 ; 10s timeout
             IfMsgbox, Timeout
                 return debug ? "* Update message timed out" : 1
@@ -99,15 +100,15 @@ update(lversion) {
             Run, %deposit%
             ExitApp
         }
-        if (Version = lversion) {
+        if (Version = ochecky) {
             MsgBox, 64, % "Up to Date"
                     , % "Source Version: " Version "`n"
-                    . "Local Version: " lversion
+                    . "Local Version: " ochecky
         }
-        if (Version < lversion) {
+        if (Version < ochecky) {
             MsgBox, 64, % "DEV Version!"
                     , % "Source Version: " Version "`n"
-                    . "Local Version: " lversion
+                    . "Local Version: " ochecky
         }
     }
 }
@@ -176,6 +177,7 @@ IfExist, %config%
 }
 
 GoSub, ReadConfig
+eboxmsg = Danger %name% of the %department%
 
 ; ============================================ HELP TEXT FORMAT ============================================
 ; Main portion of the help text that is displayed
@@ -183,7 +185,6 @@ subhelptext =
 (
 Police Hotkeys:
 Control+1 = Config
-Control+2 = Ticket Calc
 Control+3 = Reload Script
 Control+/ = Vehicle Image Search
 Control+- = runplate
@@ -192,8 +193,8 @@ Control+K = Calls for TOW
 Control+J = Lets TOW know information
 tmedical - medical rp message
 tmic = mic help
-tpaystate = paystate help
-tndghelp = ndg help
+tglovebox - Search Glovebox
+tstrunk - Search Trunk
 )
 
 helptext = 
@@ -219,7 +220,7 @@ timpound - place impound sticker
 tplate - notes the plate
 tvin = notes the vin
 ttrunk - get itmes from trunk (medbag|slimjim|tintmeter|cones|gsr|breathalizer|bodybag)
-tglovebox - searches through the interior of a vehicle
+tsglovebox - searches through the interior of a vehicle
 tstrunk - searches through the trunk of the vehicle - Face the trunk
 
 Control+1 - Configuration screen
@@ -248,7 +249,7 @@ Help Commands:
 --------------------
 tmic = help text about fixing mic in local ooc
 tpaystate = help text about paying state in local ooc
-tndghelp = display ndg help information in local ooc
+tsoehelp = display ndg help information in local ooc
 
 General Commands:
 ---------------------------
@@ -267,29 +268,6 @@ If you wish to change any of the hotkeys.
 This is the section to do so. Click on the box and then
 hit the keys together to configure the hotkey.
 )
-
-citationtext = 
-(
-This is the portion to handle citations/tickets.
-You can not GROUP tickets, they must be issued one per infraction.
-The DB records it as one ticket per /ticket given.
-All indicated arrest/ticket amounts are the MAX not the suggested.
-)
-
-misdemeanortext = 
-(
-This is the portion to handle misdemeanor charges.
-For x2 or more charges.  This should be annotated on report. not Arson 2nd Degree x2 in the /arrest or /bill
-All indicated arrest/bill amounts are the MAX not the suggested.
-)
-
-felonytext = 
-(
-This is the portion to handle felony charges.
-For x2 or more charges.  This should be annotated on report. not Arson 1st Degree x2 in the /arrest or /bill
-All indicated arrest/bill amounts are the MAX not the suggested.
-)
-
 ; ============================================ CUSTOM SYSTEM TRAY ============================================
 ; Removes all of the standard options from the system tray
 Menu, Tray, NoStandard
@@ -311,7 +289,7 @@ Gui, 6:Add, Text, %textspace% , % "Author: " script.author
 Gui, 6:Add, Text, %textspace% , HomePage:
 Gui, 6:Font, s10 Underline cTeal, Consolas
 Gui, 6:Add, Text, x85 y79 gHomePage, HomePage
-HomePage_TT := "Original home page on NDG forums"
+HomePage_TT := "Original home page on SOE forums"
 Gui, 6:Font
 Gui, 6:Font, s10 cRed, Consolas
 Gui, 6:Add, Text, x12 y96, % "Create Date: " script.crtdate
@@ -402,7 +380,7 @@ Return
 Return
 
 ^4::
-    update(script.version)
+    update(ochecky)
 Return
 
 vehimghk:
@@ -429,8 +407,6 @@ Return
 ; ============================================ START HOTKEY CONFIRUATION ============================================
 
 ; SetKeyDelay , Delay, PressDuration, Play
-; Both numbers should match to work with your ping to the server.
-; Take your ping to the server and then times it by two to equal the delay numbers
 SetKeyDelay, 0, 100
 
 ; Configure Variables to be used
@@ -450,11 +426,8 @@ SetScrollLockState, AlwaysOff
 ; Minor issue with this.  It is holding the normal 0 from being sent.  Will need to look into that.
 ; Numpad0 & Numpad3::AltTab ; Hold down Numpad0 and press Numpad3 to move forward in the AltTab.  Select the window with left click afterwards.
 
-; This will setup all of the variables for the script
-
 ^1::
     gosub, fuckakey
-    ; ============================================ TESTING GUI ============================================
     Gui, 1:Destroy
     Gui, 1:Font,, Consolas
     Gui, 1:Color, Silver
@@ -474,6 +447,7 @@ SetScrollLockState, AlwaysOff
     Gui, 1:Add, Text,, Third Party Action:
     Gui, 1:Add, Text,, First Party Action:
     Gui, 1:Add, Text,, Advertisement:
+    Gui, 1:Add, Text,, Local OOC:
     Gui, 1:Add, Text, x210 y34, Phone Number:
     Gui, 1:Add, DropDownList, x90 y30 w110 vrolepick, |LEO|TOW|CIV|SAFR
     rolepick_TT := "Select the character role that you will be playing as"
@@ -495,6 +469,7 @@ SetScrollLockState, AlwaysOff
     Gui, 1:Add, Edit, w60 vds, %ds%
     Gui, 1:Add, Edit, w60 vms, %ms%
     Gui, 1:Add, Edit, w60 vas, %as%
+    Gui, 1:Add, Edit, w60 vlos, %los%
     Gui, 1:Add, Edit, x290 y30 w110 vphone, %phone%
     phone_TT := "Your Phone number, after 555-"
     Gui, 1:Add, Checkbox, x100 y470 vtestmode, Enable TestMode? Default, works in-game and notepad.
@@ -508,7 +483,6 @@ SetScrollLockState, AlwaysOff
 
     1GuiEscape: ; Hitting escape key while open
     1GuiClose: ; Hitting the X while open
-    ; MsgBox Nope lol
     Gui, 1:Cancel
     Return
 
@@ -518,7 +492,7 @@ SetScrollLockState, AlwaysOff
     tadv = %as% I work for [^3%towcompany%^0] and we do cool tow stuff that makes tows happy 555-%phone%!!
     tsend = %rs% [^3TOW%myid%^0] Send it!
     ; Police related section
-    medicalmsg = Hello I am ^1%title% %name% %department%^0, Please use this time to perform the medical activities required for the wounds you have received.  Using ^1/do's ^0and ^1/me's ^0to simulate your actions and the Medical staff actions. -Once completed. Use ^1/do Medical staff waves the %title% in^0.
+    medicalmsg = %los% Hello I am ^1%title% %name% %department%^0, Please use this time to perform the medical activities required for the wounds you have received.  Using ^1/do's ^0and ^1/me's ^0to simulate your actions and the Medical staff actions. -Once completed. Use ^1/do Medical staff waves the %title% in^0.
     towmsg1 = %rs% [^1%callsign%^0] to [^3TOW^0]
     GoSub, UpdateConfig
 
@@ -542,24 +516,18 @@ SetScrollLockState, AlwaysOff
         Gui, 2:Add, Tab3,, LEO|TOW|CIV|SAFR|Help|General
     }
     Gui, 2:Add, Text,, %helptext2%
-    Gui, 2:Add, Text,x20 y82, tdutystartmsg1:
-    Gui, 2:Add, Text,x20 y122, tdutystartmsg2:
-    Gui, 2:Add, Text,x20 y162, tdutystartmsg3:
-    Gui, 2:Add, Text,x20 y192, towmsg1:
-    Gui, 2:Add, Text,x20 y216, tfriskmsg:
-    Gui, 2:Add, Text,x20 y256, tsearchmsg:
-    Gui, 2:Add, Text,x20 y296, tmedicalmsg:
+    Gui, 2:Add, Text,x20 y82, tdutystartmsg:
+    Gui, 2:Add, Text,x20 y120, towmsg1:
+    Gui, 2:Add, Text,x20 y148, tfriskmsg:
+    Gui, 2:Add, Text,x20 y188, tsearchmsg:
+    Gui, 2:Add, Text,x20 y228, tmedicalmsg:
     Gui, 2:Add, Text,x20 y370, Spikes:
     Gui, 2:Add, Text,, Vehicle Image Search:
     Gui, 2:Add, Text,, RunPlate:
     Gui, 2:Add, Text,x350 y370, Tow Initiate:
     Gui, 2:Add, Text,, Tow Information:
-    Gui, 2:Add, Edit, r2 vdutystartmsg1 w500 x115 y80, %dutystartmsg1%
-    dutystartmsg1_TT := "Bodycam duty start message"
-    Gui, 2:Add, Edit, r2 vdutystartmsg2 w500, %dutystartmsg2%
-    dutystartmsg2_TT := "Dashcam duty start message"
-    Gui, 2:Add, Edit, vdutystartmsg3 w500, %dutystartmsg3%
-    dutystartmsg3_TT := "Log into the MWS/CAD"
+    Gui, 2:Add, Edit, r2 vdutystartmsg w500 x115 y80, %dutystartmsg%
+    dutystartmsg_TT := "Bodycam duty start message"
     Gui, 2:Add, Edit, r1 vtowmsg1 w500, %towmsg1%
     towmsg1_TT := "Initial call to tow on radio"
     Gui, 2:Add, Edit, r2 vfriskmsg w500, %friskmsg%
@@ -729,7 +697,6 @@ Return
             Send, {t up}
             Sleep, %delay%
             Clipboard = /spikes
-            ClipWait
             Send, {RCtrl down}v{RCtrl up}{enter}
             spikes = 1
         } else {
@@ -738,12 +705,11 @@ Return
             Send, {t up}
             Sleep, %delay%
             Clipboard = /rspikes
-            ClipWait
             Send, {Rctrl down}v{Rctrl up}{enter}
             spikes = 0
         }
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
 
@@ -756,7 +722,6 @@ Return
         Send, {t up}
         Sleep, %delay%
         Clipboard := "/runplate "
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}
     }
     Return
@@ -772,35 +737,18 @@ Return
         }
         clipaboard = %clipboard%
         Sleep, %delay%
-        Send, {t down}
-        Sleep, %delay%
-        Send, {t up}
-        Sleep, %delay%
-        Clipboard = %dutystartmsg1%
-        ClipWait
-        Send, {Rctrl down}v{Rctrl up}{enter}
-        Sleep, %delay%
-        Send, {t down}
-        Sleep, %delay%
-        Send, {t up}
-        Sleep, %delay%
-        Clipboard = %dutystartmsg2%
-        ClipWait
-        Send, {Rctrl down}v{Rctrl up}{enter}
-        Sleep, %delay%
-        Send, {t down}
-        Sleep, %delay%
-        Send, {t up}
-        Sleep, %delay%
-        Clipboard = %dutystartmsg3%
-        ClipWait
+        Clipboard = %dutystartmsg%
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {F7 down}
         Sleep, %delay%
         Send, {F7 up}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Send, {F9 down}
+        Sleep, %delay%
+        Send, {F9 up}
+        Sleep, %delay%
+        Clipboard = %clipaboard%
     }
     Return
 
@@ -815,7 +763,6 @@ Return
         Send, {t up}
         Sleep, %delay%
         Clipboard = /rc 5
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {t down}
@@ -823,10 +770,9 @@ Return
         Send, {t up}
         Sleep, %delay%
         Clipboard = %towmsg1%
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
 
@@ -853,10 +799,9 @@ Return
                     Send, {t up}
                     Sleep, %delay%
                     Clipboard = %rs% [^1%callsign%^0] to [^3TOW%towid%^0] I have a %veh% for you at %towloc%
-                    ClipWait
                     Send, {Rctrl down}v{Rctrl up}{enter}
                     Sleep, %delay%
-                    clipboard = %clipaboard%
+                    Clipboard = %clipaboard%
                 }
             }
         }
@@ -869,7 +814,6 @@ Return
         clipaboard = %clipboard%
         Sleep, %delay%
         Clipboard = %friskmsg%
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {t down}
@@ -877,10 +821,9 @@ Return
         Send, {t up}
         Sleep, %delay%
         Clipboard = /frisk
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
 
@@ -890,7 +833,6 @@ Return
         clipaboard = %clipboard%
         Sleep, %delay%
         Clipboard = %searchmsg%
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {t down}
@@ -898,10 +840,9 @@ Return
         Send, {t up}
         Sleep, %delay%
         Clipboard = /search
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
 
@@ -912,10 +853,9 @@ Return
         clipaboard = %clipboard%
         Sleep, %delay%
         Clipboard = %ms% touches the trunk lid of the vehicle
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
 
@@ -925,10 +865,9 @@ Return
         clipaboard = %clipboard%
         Sleep, %delay%
         Clipboard = %medicalmsg%
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
 
@@ -938,7 +877,6 @@ Return
         clipaboard = %clipboard%
         Sleep, %delay%
         Clipboard = /e notepad
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {t down}
@@ -946,10 +884,9 @@ Return
         Send, {t up}
         Sleep, %delay%
         Clipboard = %ms% notes a few things to himself that he thinks are important.
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
 
@@ -959,7 +896,6 @@ Return
         clipaboard = %clipboard%
         Sleep, %delay%
         Clipboard = /e notepad
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {t down}
@@ -967,14 +903,13 @@ Return
         Send, {t up}
         Sleep, %delay%
         Clipboard = %ms% notes the plate down
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {m down}
         Sleep, %delay%
         Send, {m up}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
 
@@ -984,7 +919,6 @@ Return
         clipaboard = %clipboard%
         Sleep, %delay%
         Clipboard = /e notepad
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {t down}
@@ -992,7 +926,6 @@ Return
         Send, {t up}
         Sleep, %delay%
         Clipboard = %ms% notes the vin information
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {t down}
@@ -1000,10 +933,9 @@ Return
         Send, {t up}
         Sleep, %delay%
         Clipboard = /vin
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
 
@@ -1013,15 +945,13 @@ Return
         clipaboard = %clipboard%
         Sleep, %delay%
         Clipboard = /e notepad
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {t down}
         Sleep, %delay%
         Send, {t up}
         Sleep, %delay%
-        Clipboard = %ds% tears off the written impound sticker and places it on the vehicle
-        ClipWait
+        Clipboard = %ms% tears off the written impound sticker and places it on the vehicle
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {t down}
@@ -1029,7 +959,6 @@ Return
         Send, {t up}
         Sleep, %delay%
         Clipboard = /impound
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Clipboard = %clipaboard%
@@ -1037,7 +966,7 @@ Return
     Return
 
     ; Searches through the glovebox of a vehicle
-    :*:tglovebox:: ; Type tglovebox in-game
+    :*:tsglovebox:: ; Type tsglovebox in-game
     if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitled - Notepad") || (testmode = 1)) {
         Items := StrSplit(Itemsar, ",")
         Random, Item, 1, Items.MaxIndex()
@@ -1045,15 +974,13 @@ Return
         clipaboard = %clipboard%
         Sleep, %delay%
         Clipboard = %ms% begins searching the the interior of the vehicle and finds some %Picked%.
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {t down}
         Sleep, %delay%
         Send, {t up}
         Sleep, %delay%
-        Clipboard = /access
-        ClipWait
+        Clipboard = /inv
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Clipboard = %clipaboard%
@@ -1068,8 +995,7 @@ Return
         Picked := Items[Item]
         clipaboard = %clipboard%
         Sleep, %delay%
-        Clipboard = /trunk
-        ClipWait
+        Clipboard = /car t open
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {t down}
@@ -1077,15 +1003,22 @@ Return
         Send, {t up}
         Sleep, %delay%
         Clipboard = %ms% begins searching the the trunk of the vehicle and finds some %Picked%.
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {t down}
         Sleep, %delay%
         Send, {t up}
         Sleep, %delay%
-        Clipboard = /access
-        ClipWait
+        Clipboard = /inv
+        Send, {Rctrl down}v{Rctrl up}{enter}
+        Msgbox, Once completed with your inventory actions, Press T
+        KeyWait, t, D
+        Sleep, %delay%
+        Send, {t down}
+        Sleep, %delay%
+        Send, {t up}
+        Sleep, %delay%
+        Clipboard = /car t
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Clipboard = %clipaboard%
@@ -1101,18 +1034,8 @@ Return
         else
         if (titem = "medbag" || titem = "slimjim" || titem = "tintmeter" || titem = "cones" || titem = "gsr" || titem = "breathalizer" || titem = "bodybag") {
             clipaboard = %clipboard%
-            Send, {enter}
             Sleep, %delay%
-            Send, {l down}
-            Sleep, %delay%
-            Send, {l up}
-            Sleep, %delay%
-            Send, {t down}
-            Sleep, %delay%
-            Send, {t up}
-            Sleep, %delay%
-            Clipboard = /trunk
-            ClipWait
+            Clipboard = /car t open
             Send, {Rctrl down}v{Rctrl up}{enter}
             Sleep, %delay%
             Send, {t down}
@@ -1120,14 +1043,11 @@ Return
             Send, {t up}
             Sleep, %delay%
             if (titem = "cones") {
-                Clipboard = %ds% Grabs a few %titem% from the trunk
-                ClipWait
+                Clipboard = %ms% Grabs a few %titem% from the trunk
             } else if (titem = "gsr") {
-                Clipboard = %ds% Grabs a %titem% kit from the trunk
-                ClipWait
+                Clipboard = %ms% Grabs a %titem% kit from the trunk
             } else {
-                Clipboard = %ds% Grabs a %titem% from the trunk
-                ClipWait
+                Clipboard = %ms% Grabs a %titem% from the trunk
             }
             Send, {Rctrl down}v{Rctrl up}{enter}
             If (titem = "medbag") {
@@ -1136,22 +1056,20 @@ Return
                 Sleep, %delay%
                 Send, {t up}
                 Sleep, %delay%
-                Clipboard = /access
-                ClipWait
+                Clipboard = /inv
                 Send, {Rctrl down}v{Rctrl up}{enter}
                 Msgbox, Once completed with your inventory actions, Press T
                 KeyWait, t, D
             }
             Sleep, %delay%
-            Clipboard = /trunk
-            ClipWait
+            Send, {t down}
+            Sleep, %delay%
+            Send, {t up}
+            Sleep, %delay%
+            Clipboard = /car t
             Send, {Rctrl down}v{Rctrl up}{enter}
             Sleep, %delay%
-            Send, {l down}
-            Sleep, %delay%
-            Send, {l up}
-            Sleep, %delay%
-            clipboard = %clipaboard%
+            Clipboard = %clipaboard%
         } else {
             Send, {enter}
             MsgBox, That %titem% is not in your trunk. Try again.
@@ -1166,14 +1084,13 @@ Return
         clipaboard = %clipboard%
         Sleep, %delay%
         Clipboard = %gunmsg%
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {6 down}
         Sleep, %delay%
         Send, {6 up}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
     ; ============================================ TOW Stuff ============================================
@@ -1183,7 +1100,6 @@ Return
         clipaboard = %clipboard%
         Sleep, %delay%
         Clipboard = /rc %trc%
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {t down}
@@ -1191,10 +1107,9 @@ Return
         Send, {t up}
         Sleep, %delay%
         Clipboard = /clockin %towcompany%
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
 
@@ -1203,10 +1118,9 @@ Return
         clipaboard = %clipboard%
         Sleep, %delay%
         Clipboard = %tadv%
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
 
@@ -1215,10 +1129,9 @@ Return
         clipaboard = %clipboard%
         Sleep, %delay%
         Clipboard = %tsend%
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
 
@@ -1236,10 +1149,9 @@ Return
                 clipaboard = %clipboard%
                 Sleep, %delay%
                 Clipboard = %rs% [^3TOW%myid%^0] to [^1%caller%^0] will be 76 to you ETA %eta% mikes.
-                ClipWait
                 Send, {Rctrl down}v{Rctrl up}{enter}
                 Sleep, %delay%
-                clipboard = %clipaboard%
+                Clipboard = %clipaboard%
             }
         }
     }
@@ -1253,7 +1165,6 @@ Return
             clipaboard = %clipboard%
             Sleep, %delay%
             Clipboard = /emote kneel
-            ClipWait
             Send, {Rctrl down}v{Rctrl up}{enter}
             Sleep, %delay%
             Send, {t down}
@@ -1265,14 +1176,12 @@ Return
             } else if (towtype = "b") {
                 Clipboard = %ttowmsg2%
             }
-            ClipWait
             Send, {Rctrl down}v{Rctrl up}{enter}
             Sleep, %delay%
             Clipboard = /tow
-            ClipWait
             Send, {Rctrl down}v{Rctrl up}{enter}
             Sleep, %delay%
-            clipboard = %clipaboard%
+            Clipboard = %clipaboard%
         } else {
             MsgBox, f or b only. Try again.
         }
@@ -1285,7 +1194,6 @@ Return
         clipaboard = %clipboard%
         Sleep, %delay%
         Clipboard = /emote kneel
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {t down}
@@ -1297,10 +1205,9 @@ Return
         } else {
             Clipboard = %tsecure2%
         }
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
 
@@ -1314,7 +1221,6 @@ Return
         } else {
             Clipboard = %treleasemsg2%
         }
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
         Send, {t down}
@@ -1322,10 +1228,9 @@ Return
         Send, {t up}
         Sleep, %delay%
         Clipboard = /tow
-        ClipWait
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
 
@@ -1334,11 +1239,10 @@ Return
     if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitled - Notepad") || (testmode = 1)) {
         clipaboard = %clipboard%
         Sleep, %delay%
-        Clipboard = %ds% opens the toolbox and removes kitty litter from it
-        ClipWait
+        Clipboard = %ms% opens the toolbox and removes kitty litter from it
         Send, {Rctrl down}v{Rctrl up}{enter}
         Sleep, %delay%
-        clipboard = %clipaboard%
+        Clipboard = %clipaboard%
     }
     Return
     ; ============================================ SAFR Stuff ============================================
@@ -1357,7 +1261,6 @@ Return
                     clipaboard = %clipboard%
                     SLeep, %delay%
                     Clipboard = /door b%bside%
-                    ClipWait
                     Send, {Rctrl down}v{Rctrl up}{enter}
                     Sleep, %delay%
                     Send, {t down}
@@ -1365,11 +1268,9 @@ Return
                     Send, {t up}
                     Sleep, %delay%
                     if (bitem = "cones") {
-                        Clipboard = %ds% grabs a few %bitem% from the %vehicle%
-                        ClipWait
+                        Clipboard = %ms% grabs a few %bitem% from the %vehicle%
                     } else {
-                        Clipboard = %ds% grabs a %bitem% from the %vehicle%
-                        ClipWait
+                        Clipboard = %ms% grabs a %bitem% from the %vehicle%
                     }
                     Send, {Rctrl down}v{Rctrl up}{enter}
                     If (bitem = "medbag") {
@@ -1379,7 +1280,6 @@ Return
                         Send, {t up}
                         Sleep, %delay%
                         Clipboard = /e %bitem%
-                        ClipWait
                         Send, {Rctrl down}v{Rctrl up}{enter}
                     }
                     Sleep, %delay%
@@ -1388,10 +1288,9 @@ Return
                     Send, {t up}
                     Sleep, %delay%
                     Clipboard = /door b%bside%
-                    ClipWait
                     Send, {Rctrl down}v{Rctrl up}{enter}
                     Sleep, %delay%
-                    clipboard = %clipaboard%
+                    Clipboard = %clipaboard%
                 } else {
                     Send, {enter}
                     MsgBox, That %bitem% is not in your %vehicle%. Try again.
@@ -1410,10 +1309,9 @@ if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitle
     clipaboard = %clipboard%
     Sleep, %delay%
     Clipboard = %micmsg%
-    ClipWait
     Send, {Rctrl down}v{Rctrl up}{enter}
     Sleep, %delay%
-    clipboard = %clipaboard%
+    Clipboard = %clipaboard%
 }
 Return
 
@@ -1423,10 +1321,9 @@ if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitle
     clipaboard = %clipboard%
     Sleep, %delay%
     Clipboard = %paystatemsg%
-    ClipWait
     Send, {Rctrl down}v{Rctrl up}{enter}
     Sleep, %delay%
-    clipboard = %clipaboard%
+    Clipboard = %clipaboard%
 }
 Return
 
@@ -1440,11 +1337,10 @@ if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitle
     Sleep, %delay%
     Send, {t up}
     Sleep, %delay%
-    clipboard = /seatbelt
-    ClipWait
+    Clipboard = /seatbelt
     Send, {Rctrl down}v{Rctrl up}{enter}
     Sleep, %delay%
-    clipboard = %clipaboard%
+    Clipboard = %clipaboard%
 }
 Return
 
@@ -1453,11 +1349,10 @@ Return
 if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitled - Notepad") || (testmode = 1)) {
     clipaboard = %clipboard%
     Sleep, %delay%
-    Clipboard := "New Dawn Gaming information at ^1 https://evolpcgaming.com/ ^0 for the forums and for the player list ^2 https://soe.gg/ ^0 for guides ^8 https://evolpcgaming.com/guidelines/"
-    ClipWait
+    Clipboard := "/l State of Emergency information at ^1 https://evolpcgaming.com/ ^0 for the forums and for the player list ^2 https://soe.gg/ ^0 for guides ^1 https://evolpcgaming.com/guidelines/ ^0"
     Send, {Rctrl down}v{Rctrl up}{enter}
     Sleep, %delay%
-    clipboard = %clipaboard%
+    Clipboard = %clipaboard%
 }
 Return
 
@@ -1471,11 +1366,10 @@ if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitle
     Sleep, %delay%
     Send, {t up}
     Sleep, %delay%
-    clipboard = /engine
-    ClipWait
+    Clipboard = /engine
     Send, {Rctrl down}v{Rctrl up}{enter}
     Sleep, %delay%
-    clipboard = %clipaboard%
+    Clipboard = %clipaboard%
 }
 Return
 
@@ -1489,19 +1383,17 @@ if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitle
     Sleep, %delay%
     Send, {t up}
     Sleep, %delay%
-    clipboard = /e phoneplay
-    ClipWait
+    Clipboard = /e phoneplay
     Send, {Rctrl down}v{Rctrl up}{enter}
     Sleep, %delay%
     Send, {t down}
     Sleep, %delay%
     Send, {t up}
     Sleep, %delay%
-    clipboard = /valet
-    ClipWait
+    Clipboard = /valet
     Send, {Rctrl down}v{Rctrl up}{enter}
     Sleep, %delay%
-    clipboard = %clipaboard%
+    Clipboard = %clipaboard%
 }
 Return
 
@@ -1515,23 +1407,21 @@ if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitle
     Sleep, %delay%
     Send, {t up}
     Sleep, %delay%
-    clipboard = %valet2hkmsg%
-    ClipWait
+    Clipboard = %valet2hkmsg%
     Send, {Rctrl down}v{Rctrl up}{enter}
     Sleep, %delay%
     Send, {t down}
     Sleep, %delay%
     Send, {t up}
     Sleep, %delay%
-    clipboard = /e atm
-    ClipWait
+    Clipboard = /e atm
     Send, {Rctrl down}v{Rctrl up}{enter}
     Sleep, %delay%
     Send, {e down}
     Sleep, %delay%
     Send, {e up}
     Sleep, %delay%
-    clipboard = %clipaboard%
+    Clipboard = %clipaboard%
 }
 Return
 
@@ -1545,19 +1435,17 @@ if (WinActive("FiveM") || WinActive("Untitled - Notepad") || WinActive("*Untitle
     Sleep, %delay%
     Send, {t up}
     Sleep, %delay%
-    clipboard = %phrechkmsg%
-    ClipWait
+    Clipboard = %phrechkmsg%
     Send, {Rctrl down}v{Rctrl up}{enter}
     Sleep, %delay%
     Send, {t down}
     Sleep, %delay%
     Send, {t up}
     Sleep, %delay%
-    clipboard = /e film
-    ClipWait
+    Clipboard = /e film
     Send, {Rctrl down}v{Rctrl up}{enter}
     Sleep, %delay%
-    clipboard = %clipaboard%
+    Clipboard = %clipaboard%
 }
 Return
 
@@ -1636,7 +1524,7 @@ ReadConfig:
     IniRead, name, %config%, Yourself, name, Dread
     IniRead, title, %config%, Yourself, title, Officer
     IniRead, department, %config%, Yourself, department, LSPD
-    IniRead, phone, %config%, Yourself, phone, 00030
+    IniRead, phone, %config%, Yourself, phone, 38915
     ; Client communication and test mode
     IniRead, delay, %config%, Yourself, delay, 80
     IniRead, testmode, %config%, Yourself, testmode, 0
@@ -1645,6 +1533,7 @@ ReadConfig:
     IniRead, ds, %config%, Server, ds, /do
     IniRead, ms, %config%, Server, ms, /me
     IniRead, as, %config%, Server, as, /ad
+    IniRead, los, %config%, Server, los, /l
     ; The hotkey related section
     IniRead, spikeshk, %config%, Keys, spikeshk, ^.
     IniRead, vehimgsearchhk, %config%, Keys, vehimgsearchhk, ^/
@@ -1659,29 +1548,27 @@ ReadConfig:
     ; Messages that correspond with the hotkeys
     ; Police related section
     IniRead, Itemsar, %config%, Police, Itemsar, Twinkie Wrappers,Hotdog buns,Potato chip bags,Used Diappers,Tools,Keyboards
-    IniRead, dutystartmsg1, %config%, Police, dutystartmsg1, %ds% secures the bodycam to the chest and then turns it on and validates that it is recording and listening.
-    IniRead, dutystartmsg2, %config%, Police, dutystartmsg2, %ds% Validates that the Dashcam is functional in both audio and video.
-    IniRead, dutystartmsg3, %config%, Police, dutystartmsg3, %ds% Logs into the MWS computer.
-    IniRead, friskmsg, %config%, Police, friskmsg, %ds% Frisks the Subject looking for any weapons and removes ^1ALLLL ^0of them
-    IniRead, searchmsg, %config%, Police, searchmsg, %ds% Searches the Subject completely and stows ^1ALLLL ^0items into the evidence bags
-    IniRead, medicalmsg, %config%, Police, medicalmsg, Hello I am ^1%title% %name% %department%^0, Please use this time to perform the medical activities required for the wounds you have received.  Using ^1/do's ^0and ^1/me's ^0to simulate your actions and the Medical staff actions. -Once completed. Use ^1/do Medical staff waves the %title% in^0.
+    IniRead, dutystartmsg, %config%, Police, dutystartmsg, %ms% secures bodycam and validates functionality, then turns on the dashcam and validates functionality. Then logs into the MWS
+    IniRead, friskmsg, %config%, Police, friskmsg, %ms% Frisks the Subject looking for any weapons and removes ALL of them
+    IniRead, searchmsg, %config%, Police, searchmsg, %ms% Searches the Subject completely and stows ALL items into the evidence bags
+    IniRead, medicalmsg, %config%, Police, medicalmsg, %los% Hello I am ^1%title% %name% %department%^0, Please use this time to perform the medical activities required for the wounds you have received.  Using ^1/do's ^0and ^1/me's ^0to simulate your actions and the Medical staff actions. -Once completed. Use ^1/do Medical staff waves the %title% in^0.
     IniRead, towmsg1, %config%, Police, towmsg1, %rs% [^1%callsign%^0] to [^3TOW^0]
     ; Towing related section
     IniRead, tadv, %config%, Towing, tadv, %as% I work for [^3%towcompany%^0] and we do cool tow stuff that makes tows happy 555-%phone%!!
     IniRead, tsend, %config%, Towing, tsend, %rs% [^3TOW%myid%^0] Send it!
-    IniRead, ttowmsg1, %config%, Towing, ttowmsg1, %ds% attaches the winch cable to the front of the vehicle
-    IniRead, ttowmsg2, %config%, Towing, ttowmsg2, %ds% attaches the winch cable to the rear of the vehicle
-    IniRead, tsecure1, %config%, Towing, tsecure1, %ds% secures the rear of the vehicle with extra tow straps
-    IniRead, tsecure2, %config%, Towing, tsecure2, %ds% secures the front of the vehicle with extra tow straps
-    IniRead, treleasemsg1, %config%, Towing, treleasemsg1, %ds% releases the extra tow cables from the rear and pulls the winch release lever
-    IniRead, treleasemsg2, %config%, Towing, treleasemsg2, %ds% releases the extra tow cables from the front and pulls the winch release lever
+    IniRead, ttowmsg1, %config%, Towing, ttowmsg1, %ms% attaches the winch cable to the front of the vehicle
+    IniRead, ttowmsg2, %config%, Towing, ttowmsg2, %ms% attaches the winch cable to the rear of the vehicle
+    IniRead, tsecure1, %config%, Towing, tsecure1, %ms% secures the rear of the vehicle with extra tow straps
+    IniRead, tsecure2, %config%, Towing, tsecure2, %ms% secures the front of the vehicle with extra tow straps
+    IniRead, treleasemsg1, %config%, Towing, treleasemsg1, %ms% releases the extra tow cables from the rear and pulls the winch release lever
+    IniRead, treleasemsg2, %config%, Towing, treleasemsg2, %ms% releases the extra tow cables from the front and pulls the winch release lever
     ; Help related section
-    IniRead, micmsg, %config%, Help, micmsg, How to fix microphone - ESC -> Settings -> Voice Chat -> Toggle On/Off -> Increase Mic Volume and Mic Sensitivity -> Match audio devices to the one you are using.
-    IniRead, paystatemsg, %config%, Help, paystatemsg, State debt is composed of your Medical and Civil bills.  To see how much you have, type ^1/paystate^0.  To pay.  Go to the Courthouse front door on ^2Power Street / Occupation Avenue^0 and then use ^2/payticket (TicketID)^0 to pay it.  ^8State Debt must be paid from your bank account
+    IniRead, micmsg, %config%, Help, micmsg, %los% How to fix your microphone - ^2ESC^0 -> ^2Settings^0 -> ^2Voice Chat^0 -> ^2Toggle On/Off^0 -> ^2Increase Mic Volume and Mic Sensitivity^0 -> Match audio devices to the one you are using.
+    IniRead, paystatemsg, %config%, Help, paystatemsg, %los% To be able to see your current state debt type ^1/paystate^0 to pay off state debt ^1/paystate amount^0.
     ; Normal related section
-    IniRead, gunmsg, %config%, Normal, gunmsg, %ds% pulls out his ^1pistol ^0from under his shirt
+    IniRead, gunmsg, %config%, Normal, gunmsg, %ms% pulls out his ^1pistol ^0from under his shirt
     IniRead, valet2hkmsg, %config%, Normal, valet2hkmsg, %ms% puts in his ticket into the valet and presses the button to receive his selected vehicle
-    IniRead, phrechkmsg, %config%, Normal, phrechkmsg, %ds% Pulls out their phone and starts recording audio and video
+    IniRead, phrechkmsg, %config%, Normal, phrechkmsg, %ms% Pulls out their phone and starts recording audio and video
 Return
 
 UpdateConfig:
@@ -1702,6 +1589,7 @@ UpdateConfig:
     IniWrite, %ds%, %config%, Server, ds
     IniWrite, %ms%, %config%, Server, ms
     IniWrite, %as%, %config%, Server, as
+    IniWrite, %los%, %config%, Server, los
     ; The hotkey related section
     IniWrite, %spikeshk%, %config%, Keys, spikeshk
     IniWrite, %vehimgsearchhk%, %config%, Keys, vehimgsearchhk
@@ -1716,9 +1604,7 @@ UpdateConfig:
     ; Messages that correspond with the hotkeys
     ; Police related 
     IniWrite, %Itemsar%, %config%, Police, Itemsar
-    IniWrite, %dutystartmsg1%, %config%, Police, dutystartmsg1
-    IniWrite, %dutystartmsg2%, %config%, Police, dutystartmsg2
-    IniWrite, %dutystartmsg3%, %config%, Police, dutystartmsg3
+    IniWrite, %dutystartmsg%, %config%, Police, dutystartmsg
     IniWrite, %friskmsg%, %config%, Police, friskmsg
     IniWrite, %searchmsg%, %config%, Police, searchmsg
     IniWrite, %medicalmsg%, %config%, Police, medicalmsg

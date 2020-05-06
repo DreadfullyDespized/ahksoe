@@ -10,6 +10,14 @@ Versioning:
     ^ Update
 ==================
 
+AHKSOE V2.20200506
+Date: 20200506 16:22
+    Changes:
+    - tpaystate and tndghelp
+    * converted tdutystart message into one instead of 3
+    ! trunk access
+    ^ searching trunk command
+
 AHKSOE V1
 Date: 20200204 18:30
     Changes:
