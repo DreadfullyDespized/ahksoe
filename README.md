@@ -1,37 +1,43 @@
-## Welcome to GitHub Pages
+# AHKSOE — AutoHotkey Doohickey for GTAV Roleplay
 
-You can use the [editor on GitHub](https://github.com/DreadfullyDespized/ahksoe/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+AutoHotkey (v1) scripts by DreadfullyDespized that automate repetitive chat commands and hotkey tasks while roleplaying GTA V (via FiveM) on the SoE community servers.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Scripts
 
-### Markdown
+- **AHKSOE.ahk** (v2.20200506) — the current script, built for GTAV RP on SoE (EvolPC Gaming community). Tabbed GUI (LEO / TOW / CIV / SAFR / Help / General) with fully rebindable hotkeys, per-role configuration, and a built-in auto-updater.
+- **AHKGTAV.ahk** (v5.0.0) — earlier version of the same concept, built for GTAV FiveM roleplay on New Dawn Gaming (NDG). Kept here for reference.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Supporting files: `SOE-Config.ini` / `GTAV-Config.ini` (settings), `Changelog-SOE.txt` / `Changelog.txt` (version history). Licensed under GPLv3 (see `LICENSE`).
 
-```markdown
-Syntax highlighted code block
+## What it does
 
-# Header 1
-## Header 2
-### Header 3
+**Text-expansion chat commands** (type the trigger in-game):
 
-- Bulleted
-- List
+- Police: `tdutystart`, `tfrisk`, `tsearch`, `tmedical`, `timpound`, `tplate`, `tvin`, `ttrunk`, `tsglovebox`
+- Tow: `tadv`, `tstart`, `tsend`, `tonway`, `ttow`, `tsecure`, `trelease`, `tkitty`
+- Help/OOC: `tmic`, `tpaystate`, `tsoehelp`
 
-1. Numbered
-2. List
+**Hotkeys** (all rebindable in the GUI, Ctrl+1):
 
-**Bold** and _Italic_ and `Code` text
+- Police: spike strip toggle, plate run, vehicle image search, call/respond to tow
+- General: seatbelt toggle, force engine on, valet pull/check, phone recording
+- Utility: reload script, update checker, police overlay on/off
 
-[Link](url) and ![Image](src)
-```
+**Configuration** — role, callsign, department, display name, chat-command prefixes (`/me`, `/do`, `/r`, …), and every hotkey are stored in the `-Config.ini` file and editable through the GUI.
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+## Requirements
 
-### Jekyll Themes
+- Windows
+- AutoHotkey 1.1 or newer (the script exits on older versions; a compiled build works too)
+- The script requests administrator rights on launch
+- GTA V with FiveM, connected to the relevant RP server
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/DreadfullyDespized/ahksoe/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+## Notes
 
-### Support or Contact
+- While running, the script keeps NumLock on and ScrollLock off, and adds Win+Del (empty recycle bin), Win+ScrollLock (pause hotkeys), Win+Insert (reload script).
+- Command prefixes and syntax are configurable so they can track server changes.
+- The full command list is shown in the script's Help tab (Ctrl+1 → Help).
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+## Status
+
+Not actively maintained — last updated 2020 (AHKSOE) / 2019 (AHKGTAV). Server command syntax may have drifted since; check the Help tab and your `-Config.ini` before relying on it.
