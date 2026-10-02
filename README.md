@@ -1,5 +1,5 @@
 # AHKSOE — AutoHotkey Doohickey for GTAV Roleplay
-**Repo label: TEST** — see [CONTRIBUTING.md](CONTRIBUTING.md).
+**Repo label: TEST** — see [CONTRIBUTING.md](CONTRIBUTING.md). — verified work merges to main, and Dread tests main. Source of truth: fleet skill "Repo registry (PROD vs TEST)".
 
 AutoHotkey (v1) scripts by DreadfullyDespized that automate repetitive chat commands and hotkey tasks while roleplaying GTA V (via FiveM) on the SoE community servers.
 
