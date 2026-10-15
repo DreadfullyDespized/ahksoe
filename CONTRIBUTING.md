@@ -1,21 +1,69 @@
 # Contributing to ahksoe
 
-**Repo label: TEST** — All branches = TEST; the owner seat merges when the process below is complete. — verified work merges to main, and Dread tests main. Source of truth: fleet skill "Repo registry (PROD vs TEST)".
-**Owner seat:** Rig (Stream Tools).
+Agents: read [AGENTS.md](AGENTS.md) first (repo scope, landmines, local proof commands). Players and setup: [README.md](README.md) (scripts, requirements, how to run).
+
+**Repo label: TEST** — verified work merges to `master`; Dread tests `master`. Source of truth: fleet skill "Repo registry (PROD vs TEST)".
+**Owner seat:** Rig (Stream Tools). **Merge:** TEST → owner merges after grader PASS and CI or local proof; agents do not merge their own PRs.
 **Tracking:** GitHub issues.
 
-## Process (required for every change, no exceptions)
-1. Open a GitHub issue first: problem, evidence, acceptance criteria.
-2. Branch `cursor/<issue#>-<slug>`. Never commit directly to `master`.
-3. One scoped PR per issue. Body: `Closes #<issue>`, what, why, evidence (run links/logs/file:line), test plan + results, risk/rollback.
-4. CI green. Never skip hooks or checks; no force-push to shared branches.
-5. Review by someone other than the author (grader ≠ doer); resolve all threads.
-6. Merge: TEST → the owner merges when steps 1–5 are done. PROD → human merge only.
-7. After merge: confirm the issue closed and post-merge CI/deploy passed; update the tracking card with PR link + evidence.
+## Setup and run
 
-Images committed to this repo must be inside a password-protected archive.
+1. Windows with [AutoHotkey 1.1+](https://www.autohotkey.com/) (or a compiled build of the script).
+2. Clone this repo; keep `AHKSOE.ahk`, `SOE-Config.ini`, and related files together.
+3. Run `AHKSOE.ahk` (administrator elevation is expected). Open the GUI with **Ctrl+1**; rebind hotkeys and chat prefixes in the tabs and in `SOE-Config.ini`.
+4. Connect FiveM to the SoE server before relying on chat triggers. `AHKGTAV.ahk` is reference-only for NDG.
 
-## Rules and what enforces them
-| Rule (Dread) | Enforcer | Runs |
-|---|---|---|
-| No code comments, ever, from any bot (2026-10-04). Only added lines are checked; existing comments get a separate cleanup pass | `tools/checks/no_new_comments.py`: fails a PR whose diff adds a comment in Python (tokenize-based; docstrings are not comments), mIRC (including `nN=` lines in `.ini` script files), AHK, JS/TS, PowerShell, bash, HTML, CSS, SQL (`--`, `/* */`), YAML (`#`, block scalars excluded) or batch (`REM`, `::`). Extensionless files are scanned by their shebang; others are skipped and named in a `skipped` line. A pure rename adds nothing. Only whole allowlisted lines pass: a shebang on line 1, the PEP 263 encoding line, `# type: ignore[...]`, `# noqa[: code]`, `# pragma: no cover`, bare AHK `#` directives and bare PowerShell `#Requires`; a comment riding on such a line (`#Requires -Version 7  # note`, `# coding: utf-8 note`) fails | `.github/workflows/no-new-comments.yml` on every PR; same command locally with `--base origin/master --head HEAD` |
+Do not commit personal machine paths as defaults; use the GUI and `-Config.ini` beside the script. Details: [README.md](README.md).
+
+## Tests and checks
+
+CI runs on every pull request:
+
+| Workflow | What it runs |
+|---|---|
+| `.github/workflows/no-new-comments.yml` | Checker unit tests, `no_secrets.py`, `agents_md_headings.py`, `no_new_comments.py` on the PR diff |
+| `.github/workflows/blast-radius.yml` | `blast_radius_check.py` on the PR body (pinned `markdown-it-py`) |
+
+**Local proof** (from repo root; same commands as [AGENTS.md](AGENTS.md) "Prove a change"):
+
+```bash
+python3 tools/checks/no_new_comments.py --base origin/master --head HEAD
+python3 tools/checks/agents_md_headings.py
+python3 -m unittest discover -s tools/checks/tests -p "test_no_new_comments.py" -v
+python3 -m unittest discover -s tools/checks/tests -p "test_agents_md_headings.py" -v
+python tools/ci/blast_radius_check.py --body-file pr.md
+```
+
+Put the PR body in `pr.md` for the blast-radius check. Script or hotkey changes: run the affected paths on Windows and record what you did in the PR (screenshot in a password-protected archive if needed).
+
+**Horde QA + local proof:** GitHub Actions is the default gate (Horde). When hosted minutes are exhausted, run every command above locally, paste the full terminal output in the PR, and say `Horde QA: local proof` so the grader can treat it like a green run. Do not merge on red CI without owner approval and a written reason.
+
+## PR flow
+
+1. Open a GitHub issue: problem, evidence, acceptance criteria.
+2. Branch `cursor/<issue#>-<slug>` from `master`. Never push directly to `master`.
+3. **One scoped change per PR** (one issue, one logical item). No drive-by refactors.
+4. PR body (see `.github/pull_request_template.md`):
+   - `## For Dread` first among narrative sections — **Ask**, **What changes for you**, **Proof** (only `https://` links to blob SHAs or Actions runs), **NOT done**.
+   - A standalone `Level: 1` or `Level: 2` line (blast radius of the change for Dread).
+   - **Owner** — one line naming the owner seat and merge tier, e.g. `Owner: Rig (TEST — owner merge after grader PASS).`
+   - `## Blast radius` — concrete areas outside the diff this can break, or why nothing else depends on it, plus what you searched or ran (`rg`, manual test, etc.). Template placeholders and TBD fail CI.
+   - `Closes #<issue>`, what/why, test plan + results, risk/rollback.
+5. CI green **or** Horde local proof (above). Never skip hooks, `--no-verify`, or "admin merge"; never disable workflows to land a change.
+6. **Grader ≠ author:** a separate reviewer posts `Verdict: PASS` or `Verdict: FAIL` as the first line of a review or comment. Grader starts at FAIL.
+7. Owner merges when the issue is satisfied, threads are resolved, and proof is accepted. After merge: confirm the issue closed and checks passed.
+
+Images in git must live inside a password-protected archive.
+
+## Team rules
+
+| Rule | Enforced by |
+|---|---|
+| No passwords or secrets in git | `tools/checks/no_secrets.py` in `no-new-comments.yml` |
+| No new code comments on added lines (AHK, ini, Python checks, shell, etc.) | `tools/checks/no_new_comments.py` |
+| **safe_fs** — checks and automation write only inside the repo checkout; game scripts do not read/write arbitrary paths or ship seat-specific defaults (only the script folder and `SOE-Config.ini` / `GTAV-Config.ini`) | Reviewers + `no_secrets` / `no_new_comments`; path rule in [README.md](README.md) |
+| Filled `## Blast radius` and `Level:` in the PR body | `tools/ci/blast_radius_check.py` in `blast-radius.yml` |
+| Required [AGENTS.md](AGENTS.md) headings stay present | `tools/checks/agents_md_headings.py` |
+| No bypassing checks, graders, or gates; a wrong check is raised to Chief of Staff | Process; automatic hard FAIL for intentional bypass |
+
+Landmines and the exact prove block: [AGENTS.md](AGENTS.md). Script behavior and requirements: [README.md](README.md).
